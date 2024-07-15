@@ -943,6 +943,7 @@ sub saldial_http_error_401_if_not_authenticated(){
 	if ($header_token) {
 		$sql = "select 1,user_uuid from v_users where api_key='%s' ";
 		$sql = &database_escape_sql($sql, $header_token);
+		warn "sql: $sql";
 		%hash = &database_select_as_hash($sql,"user_uuid");
 		if ($hash{1}{$user_uuid}) {
 			$hearder_token_auth = 1;
