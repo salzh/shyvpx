@@ -940,15 +940,25 @@ sub saldial_http_error_401_if_not_authenticated(){
 	#
 	# todo: check permission from time to time.... We canot trust this user forever. Things change :)
 	# a good idea is check saldial_user_is_broadcast and other enable/disable flags
-	unless (&websession_is_active()) {
-		print "Content-type: text/html\n";
-		print "Cache-Control: no-cache, must-revalidate\n";
-		print "Pragma: no-cache\n";
-		print "status: 401\n";
-		print "\n";
-		print "Unauthorized\n";
-		exit;
-	}	
+	if ($header_token) {
+		$sql = "select 1,user_uuid from v_users where api_key='%s' ";
+		$sql = &database_escape_sql($sql, $header_token);
+		%hash = &database_select_as_hash($sql,"user_uuid");
+		if ($hash{1}{$user_uuid}) {
+			$hearder_token_auth = 1;
+			return 1;
+		}		
+	} else {	
+		unless (&websession_is_active()) {
+			print "Content-type: text/html\n";
+			print "Cache-Control: no-cache, must-revalidate\n";
+			print "Pragma: no-cache\n";
+			print "status: 401\n";
+			print "\n";
+			print "Unauthorized\n";
+			exit;
+		}
+	}
 }
 
 sub print_api_error_end_exit(){
