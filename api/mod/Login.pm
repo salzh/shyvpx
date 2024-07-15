@@ -7,35 +7,35 @@
 
 sub login() {
 	
-sub api_access_check {
-	my ($domain) = @_;
+	sub api_access_check {
+		my ($domain) = @_;
+		
+		%hash  = &database_select_as_hash("select
+											1, domain_uuid
+										from
+											v_domains
+										where
+											domain_name='$domain'",
+										'uuid');
+										
+		$uuid = $hash{1}{uuid};
+		
+		if (!$uuid) { &print_api_error_end_exit("13","Domain UUID not found");	}
 	
-  %hash  = &database_select_as_hash("select
-										1, domain_uuid
-									from
-										v_domains
-									where
-										domain_name='$domain'",
-									'uuid');
-									
-	$uuid = $hash{1}{uuid};
-	
-	if (!$uuid) { &print_api_error_end_exit("13","Domain UUID not found");	}
-
-	  %hash1  = &database_select_as_hash("select
-										1, api_access
-									from
-										v_video_codecs
-									where
-									    api_access = 'true' 
-									and
-										domain_uuid = '$uuid'",
-									'api_access');
-									
-	$api_access = $hash1{1}{api_access};	
-	
-	return $api_access;
-  }
+		  %hash1  = &database_select_as_hash("select
+											1, api_access
+										from
+											v_video_codecs
+										where
+											api_access = 'true' 
+										and
+											domain_uuid = '$uuid'",
+										'api_access');
+										
+		$api_access = $hash1{1}{api_access};	
+		
+		return $api_access;
+	}
   
 	#
 	# check already login (save resources)

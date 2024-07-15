@@ -53,7 +53,8 @@ if (lc($ENV{REQUEST_METHOD}) eq 'get') {
 	}
 }
 warn Dumper(\%form);
-
+my($header_token) = $cgi->http('HTTP_AUTHORIZATION') =~ /(?:\w+?) (.+)$/;
+warn "header_token: $header_token";
 use JSON; # to install, # sudo cpan JSON
 $json_engine	= JSON->new->allow_nonref;
 
