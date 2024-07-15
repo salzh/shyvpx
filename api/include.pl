@@ -948,7 +948,14 @@ sub saldial_http_error_401_if_not_authenticated(){
 		if ($hash{1}{$user_uuid}) {
 			$hearder_token_auth = 1;
 			return 1;
-		}		
+		}
+		print "Content-type: text/html\n";
+		print "Cache-Control: no-cache, must-revalidate\n";
+		print "Pragma: no-cache\n";
+		print "status: 401\n";
+		print "\n";
+		print "Unauthorized\n";
+		exit;
 	} else {	
 		unless (&websession_is_active()) {
 			print "Content-type: text/html\n";
